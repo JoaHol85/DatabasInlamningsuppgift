@@ -6,42 +6,56 @@
         xmlns:local="clr-namespace:EFFinalProject"
         mc:Ignorable="d"
         ResizeMode="NoResize"
-        Title="MainWindow" Height="800" Width="550">
+        Title="MainWindow" Height="850" Width="550">
+    <Window.Background>
+        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="Black" Offset="1"/>
+            <GradientStop Color="#FF1313E1"/>
+        </LinearGradientBrush>
+    </Window.Background>
     <Grid>
-        <ListBox x:Name="lbx_Result" HorizontalAlignment="Left" Height="764" Margin="215,0,0,0" VerticalAlignment="Center" Width="325"/>
-        <Button x:Name="btn_Temperature" Content="Temperatur" HorizontalAlignment="Left" Height="42" Margin="40,58,0,0" VerticalAlignment="Top" Width="140" Click="btn_Temperature_Click"/>
-        <Button x:Name="btn_Humidity" Content="Luftfuktighet" HorizontalAlignment="Left" Height="42" Margin="40,104,0,0" VerticalAlignment="Top" Width="140" Click="btn_Humidity_Click"/>
-        <Button x:Name="btn_MoldRisk" Content="Mögelrisk" HorizontalAlignment="Left" Height="42" Margin="40,152,0,0" VerticalAlignment="Top" Width="140" Click="btn_MoldRisk_Click"/>
-        <CheckBox x:Name="cbx_LowToHigh" Content="Lägsta -&gt; Högsta" HorizontalAlignment="Left" Margin="54,234,0,0" VerticalAlignment="Top" Checked="cbx_LowToHigh_Checked"/>
-        <CheckBox x:Name="cbx_HighToLow" Content="Högsta -&gt; Lägsta" HorizontalAlignment="Left" Margin="54,254,0,0" VerticalAlignment="Top" Checked="cbx_HighToLow_Checked"/>
-        <Label x:Name="lbl_SortOrder" Content="Sortera på:" HorizontalAlignment="Left" Height="28" Margin="72,206,0,0" VerticalAlignment="Top" Width="76" RenderTransformOrigin="0.493,0.573"/>
-        <Border x:Name="brd_SortBorder" BorderThickness="1" BorderBrush="Black" HorizontalAlignment="Left" Height="74" Margin="40,206,0,0" VerticalAlignment="Top" Width="140"/>
-        <Label x:Name="lbl_ShowList" Content="Visa medelvärdet för dag och:" HorizontalAlignment="Left" Height="28" Margin="26,36,0,0" VerticalAlignment="Top" Width="168"/>
-        <DatePicker x:Name="dp_SelectDate" DisplayDate="5/31/2016" HorizontalAlignment="Left" Height="26" Margin="47,370,0,0" VerticalAlignment="Top" Width="126"/>
-        <Label x:Name="lbl_DateStyle" Content="ÅÅÅÅ-MM-DD" HorizontalAlignment="Left" Height="22" Margin="75,352,0,0" VerticalAlignment="Top" Width="70" FontStyle="Italic" FontSize="9"/>
-        <CheckBox x:Name="cbx_Inside" Content="Inne" HorizontalAlignment="Left" Height="18" Margin="58,316,0,0" VerticalAlignment="Top" Width="49" Checked="cbx_Inside_Checked"/>
-        <CheckBox x:Name="cbx_Outside" Content="Ute" HorizontalAlignment="Left" Height="18" Margin="107,316,0,0" VerticalAlignment="Top" Width="41" Checked="cbx_Outside_Checked"/>
-        <Label x:Name="lbl_InOut" Content="Sök på data inne/ute:" HorizontalAlignment="Left" Height="26" Margin="45,290,0,0" VerticalAlignment="Top" Width="126"/>
-        <Border BorderThickness="1" BorderBrush="Black" HorizontalAlignment="Left" Height="52" Margin="40,290,0,0" VerticalAlignment="Top" Width="140"/>
-        <Button x:Name="btn_SearchDate" Content="Sök på datum" HorizontalAlignment="Left" Height="24" Margin="47,402,0,0" VerticalAlignment="Top" Width="126" Click="btn_SearchDate_Click"/>
-        <Border BorderThickness="1" BorderBrush="Black" HorizontalAlignment="Left" Height="86" Margin="40,352,0,0" VerticalAlignment="Top" Width="140"/>
-        <Label Content="VÄDERSTATIONEN" HorizontalAlignment="Left" Height="35" Margin="10,10,0,0" VerticalAlignment="Top" Width="200" FontSize="22" FontWeight="Bold"/>
-        <Border BorderThickness="1" BorderBrush="Black" HorizontalAlignment="Left" Height="39" Margin="23,704,0,0" VerticalAlignment="Top" Width="178" Background="Black"/>
-        <Button x:Name="btn_ReadFromFile" Content="Infoga data från fil till databas" HorizontalAlignment="Left" Height="33" Margin="26,707,0,0" VerticalAlignment="Top" Width="172" Click="btn_ReadFromFile_Click"/>
+        <Grid.Background>
+            <ImageBrush/>
+        </Grid.Background>
+        <ListBox x:Name="lbx_Result" HorizontalAlignment="Left" Height="814" Margin="215,0,0,0" VerticalAlignment="Center" Width="325"/>
+        <Button x:Name="btn_Temperature" Content="Temperatur" HorizontalAlignment="Left" Height="42" Margin="36,49,0,0" VerticalAlignment="Top" Width="140" Click="btn_Temperature_Click"/>
+        <Button x:Name="btn_Humidity" Content="Luftfuktighet" HorizontalAlignment="Left" Height="42" Margin="36,95,0,0" VerticalAlignment="Top" Width="140" Click="btn_Humidity_Click"/>
+        <Button x:Name="btn_MoldRisk" Content="Mögelrisk" HorizontalAlignment="Left" Height="42" Margin="36,143,0,0" VerticalAlignment="Top" Width="140" Click="btn_MoldRisk_Click"/>
+        <CheckBox x:Name="cbx_LowToHigh" Content="Lägsta -&gt; Högsta" HorizontalAlignment="Left" Margin="50,225,0,0" VerticalAlignment="Top" Checked="cbx_LowToHigh_Checked" Foreground="White"/>
+        <CheckBox x:Name="cbx_HighToLow" Content="Högsta -&gt; Lägsta" HorizontalAlignment="Left" Margin="50,245,0,0" VerticalAlignment="Top" Checked="cbx_HighToLow_Checked" Foreground="White"/>
+        <Label x:Name="lbl_SortOrder" Content="Sortera på:" HorizontalAlignment="Left" Height="28" Margin="68,197,0,0" VerticalAlignment="Top" Width="76" RenderTransformOrigin="0.493,0.573" Foreground="White"/>
+        <Border x:Name="brd_SortBorder" BorderThickness="1" BorderBrush="White" HorizontalAlignment="Left" Height="74" Margin="36,196,0,0" VerticalAlignment="Top" Width="140"/>
+        <Label x:Name="lbl_ShowList" Content="Visa medelvärdet för dag och:" HorizontalAlignment="Left" Height="28" Margin="22,27,0,0" VerticalAlignment="Top" Width="168" Foreground="#FFF9F9F9"/>
+        <DatePicker x:Name="dp_SelectDate" DisplayDate="5/31/2016" HorizontalAlignment="Left" Height="26" Margin="43,361,0,0" VerticalAlignment="Top" Width="126"/>
+        <Label x:Name="lbl_DateStyle" Content="ÅÅÅÅ-MM-DD" HorizontalAlignment="Left" Height="22" Margin="71,343,0,0" VerticalAlignment="Top" Width="70" FontStyle="Italic" FontSize="9" Foreground="White"/>
+        <CheckBox x:Name="cbx_Inside" Content="Inne" HorizontalAlignment="Left" Height="18" Margin="54,307,0,0" VerticalAlignment="Top" Width="49" Checked="cbx_Inside_Checked" Foreground="White"/>
+        <CheckBox x:Name="cbx_Outside" Content="Ute" HorizontalAlignment="Left" Height="18" Margin="103,307,0,0" VerticalAlignment="Top" Width="41" Checked="cbx_Outside_Checked" Foreground="White"/>
+        <Label x:Name="lbl_InOut" Content="Sök på data inne/ute:" HorizontalAlignment="Left" Height="26" Margin="41,281,0,0" VerticalAlignment="Top" Width="126" Foreground="White"/>
+        <Border BorderThickness="1" BorderBrush="White" HorizontalAlignment="Left" Height="52" Margin="36,281,0,0" VerticalAlignment="Top" Width="140"/>
+        <Button x:Name="btn_SearchDate" Content="Sök på datum" HorizontalAlignment="Left" Height="24" Margin="43,393,0,0" VerticalAlignment="Top" Width="126" Click="btn_SearchDate_Click"/>
+        <Border BorderThickness="1" BorderBrush="White" HorizontalAlignment="Left" Height="86" Margin="36,343,0,0" VerticalAlignment="Top" Width="140"/>
+        <Label Content="VÄDERSTATIONEN" HorizontalAlignment="Left" Height="35" Margin="6,1,0,0" VerticalAlignment="Top" Width="200" FontSize="22" FontWeight="Bold" Foreground="White"/>
+        <Border BorderThickness="1" BorderBrush="Black" HorizontalAlignment="Left" Height="39" Margin="19,758,0,0" VerticalAlignment="Top" Width="178" Background="#FFF50021"/>
+        <Button x:Name="btn_ReadFromFile" Content="Infoga data från fil till databas" HorizontalAlignment="Left" Height="33" Margin="22,761,0,0" VerticalAlignment="Top" Width="172" Click="btn_ReadFromFile_Click"/>
         <Label x:Name="lbl_ReadFile" Content="Laddar. . ." HorizontalAlignment="Left" Height="23" Margin="77,684,0,0" VerticalAlignment="Top" Width="62" Visibility="Hidden"/>
-        <Label Content="Lägga till data:" HorizontalAlignment="Left" Height="26" Margin="66,453,0,0" VerticalAlignment="Top" Width="92" FontWeight="Bold"/>
-        <TextBox x:Name="tbx_Place" HorizontalAlignment="Left" Height="20" Margin="128,478,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="42" MaxLength="5"/>
-        <Label x:Name="lbl_Temp" Content="Temperatur:" HorizontalAlignment="Left" Height="24" Margin="46,497,0,0" VerticalAlignment="Top" Width="81"/>
-        <Label x:Name="lbl_Place" Content="Inne / Ute:" HorizontalAlignment="Left" Height="26" Margin="47,475,0,0" VerticalAlignment="Top" Width="81"/>
-        <Label x:Name="lbl_Humidity" Content="Luftfuktighet:" HorizontalAlignment="Left" Height="27" Margin="46,519,0,0" VerticalAlignment="Top" Width="81"/>
-        <TextBox x:Name="tbx_Temp" HorizontalAlignment="Left" Height="18" Margin="128,503,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="42" MaxLength="5"/>
-        <TextBox x:Name="tbx_Humidity" HorizontalAlignment="Left" Height="19" Margin="128,523,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="42" MaxLength="5"/>
-        <Button x:Name="btn_SaveData" Content="Spara data" HorizontalAlignment="Left" Margin="51,569,0,0" VerticalAlignment="Top" Height="38" Width="119" Click="btn_SaveData_Click"/>
-        <Label x:Name="lbl_Time" Content="Tid:" HorizontalAlignment="Left" Height="27" Margin="46,542,0,0" VerticalAlignment="Top" Width="81"/>
-        <TextBox x:Name="tbx_Time" HorizontalAlignment="Left" Height="19" Margin="128,546,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="42" Text="NU" IsEnabled="False"/>
-        <Border BorderThickness="1" BorderBrush="Black" HorizontalAlignment="Left" Height="166" Margin="40,453,0,0" VerticalAlignment="Top" Width="140"/>
-        <Button x:Name="btn_MeteorologicalAutumn" Content="Höst" HorizontalAlignment="Left" Height="28" Margin="40,648,0,0" VerticalAlignment="Top" Width="68" Click="btn_MeteorologicalAutumn_Click"/>
-        <Button x:Name="btn_MeteorologicalWinter" Content="Vinter" HorizontalAlignment="Left" Height="28" Margin="112,648,0,0" VerticalAlignment="Top" Width="68" Click="btn_MeteorologicalWinter_Click"/>
-        <Label Content="Visa datum för Meteorologisk:" HorizontalAlignment="Left" Height="29" Margin="26,624,0,0" VerticalAlignment="Top" Width="172"/>
+        <Label Content="Lägga till data:" HorizontalAlignment="Left" Height="26" Margin="62,444,0,0" VerticalAlignment="Top" Width="92" FontWeight="Bold" Foreground="White"/>
+        <TextBox x:Name="tbx_Place" HorizontalAlignment="Left" Height="20" Margin="124,469,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="42" MaxLength="5"/>
+        <Label x:Name="lbl_Temp" Content="Temperatur:" HorizontalAlignment="Left" Height="24" Margin="42,488,0,0" VerticalAlignment="Top" Width="81" Foreground="White"/>
+        <Label x:Name="lbl_Place" Content="Inne / Ute:" HorizontalAlignment="Left" Height="26" Margin="43,466,0,0" VerticalAlignment="Top" Width="81" Foreground="White"/>
+        <Label x:Name="lbl_Humidity" Content="Luftfuktighet:" HorizontalAlignment="Left" Height="27" Margin="42,510,0,0" VerticalAlignment="Top" Width="81" Foreground="White"/>
+        <TextBox x:Name="tbx_Temp" HorizontalAlignment="Left" Height="18" Margin="124,494,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="42" MaxLength="5"/>
+        <TextBox x:Name="tbx_Humidity" HorizontalAlignment="Left" Height="19" Margin="124,514,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="42" MaxLength="5"/>
+        <Button x:Name="btn_SaveData" Content="Spara data" HorizontalAlignment="Left" Margin="47,560,0,0" VerticalAlignment="Top" Height="38" Width="119" Click="btn_SaveData_Click"/>
+        <Label x:Name="lbl_Time" Content="Tid:" HorizontalAlignment="Left" Height="27" Margin="42,533,0,0" VerticalAlignment="Top" Width="81" Foreground="White"/>
+        <TextBox x:Name="tbx_Time" HorizontalAlignment="Left" Height="19" Margin="124,537,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="42" Text="NU" IsEnabled="False"/>
+        <Border BorderThickness="1" BorderBrush="White" HorizontalAlignment="Left" Height="166" Margin="36,444,0,0" VerticalAlignment="Top" Width="140"/>
+        <Button x:Name="btn_MeteorologicalAutumn" Content="Höst" HorizontalAlignment="Left" Height="28" Margin="34,708,0,0" VerticalAlignment="Top" Width="68" Click="btn_MeteorologicalAutumn_Click"/>
+        <Button x:Name="btn_MeteorologicalWinter" Content="Vinter" HorizontalAlignment="Left" Height="28" Margin="106,708,0,0" VerticalAlignment="Top" Width="68" Click="btn_MeteorologicalWinter_Click"/>
+        <Label Content="Visa datum för Meteorologisk:" HorizontalAlignment="Left" Height="29" Margin="20,684,0,0" VerticalAlignment="Top" Width="172" Foreground="White"/>
+        <Label Content="Visa när temperaturskillnaden" HorizontalAlignment="Left" Height="24" Margin="21,618,0,0" VerticalAlignment="Top" Width="168" Foreground="White"/>
+        <Button x:Name="btn_MostTempDifference" Content="Mest" HorizontalAlignment="Left" Height="22" Margin="43,651,0,0" VerticalAlignment="Top" Width="60" Click="btn_MostTempDifference_Click"/>
+        <Border BorderThickness="1" BorderBrush="White" HorizontalAlignment="Left" Height="61" Margin="21,620,0,0" VerticalAlignment="Top" Width="168"/>
+        <Label Content="Var som:" HorizontalAlignment="Left" Height="24" Margin="77,631,0,0" VerticalAlignment="Top" Width="56" Foreground="White"/>
+        <Button x:Name="btn_LeastTempDifference" Content="Minst" HorizontalAlignment="Left" Height="22" Margin="108,651,0,0" VerticalAlignment="Top" Width="59" Click="btn_LeastTempDifference_Click"/>
     </Grid>
 </Window>

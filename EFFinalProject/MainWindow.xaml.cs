@@ -1,18 +1,8 @@
-﻿using System;
+﻿using EFFinalLibrary;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using EFFinalLibrary;
 
 namespace EFFinalProject
 {
@@ -26,6 +16,8 @@ namespace EFFinalProject
             InitializeComponent();
         }
 
+
+        // Checkboxes
         private void cbx_LowToHigh_Checked(object sender, RoutedEventArgs e)
         {
             cbx_HighToLow.IsChecked = false;
@@ -33,7 +25,6 @@ namespace EFFinalProject
         private void cbx_HighToLow_Checked(object sender, RoutedEventArgs e)
         {
             cbx_LowToHigh.IsChecked = false;
-
         }
         private void cbx_Inside_Checked(object sender, RoutedEventArgs e)
         {
@@ -44,6 +35,8 @@ namespace EFFinalProject
             cbx_Inside.IsChecked = false;
         }
 
+
+        // Temperature, Humidity and Moldrisk buttons
         private void btn_Temperature_Click(object sender, RoutedEventArgs e)
         {
             bool checkboxes = ValidateSortingCheckboxes();
@@ -117,6 +110,8 @@ namespace EFFinalProject
             }
         }
 
+
+        // Meteorological Winter / Autumn buttons
         private void btn_MeteorologicalAutumn_Click(object sender, RoutedEventArgs e)
         {
             PrintMessage(EFLibrary.MeteorologicalAutumn());
@@ -126,6 +121,39 @@ namespace EFFinalProject
             PrintMessage(EFLibrary.MeteorologicalWinter());
         }
 
+
+        // Most / Least temperature difference buttons
+        private void btn_MostTempDifference_Click(object sender, RoutedEventArgs e)
+        {
+            List<TemperatureDifference> tempDiffList = EFLibrary.TempDifference();
+
+            var qu = tempDiffList
+                .OrderByDescending(r => r.TempDifferenceInsideOutside)
+                .Take(150);
+
+            PrintMessage("Datum:\t\tTimme:\tTemperaturskillnad Inne/Ute");
+            foreach (var item in qu)
+            {
+                lbx_Result.Items.Add($"{item.Time.ToString("yy-MM-dd\tHH")}\t\t{Math.Round(item.TempDifferenceInsideOutside, 1)}");
+            }
+        }
+        private void btn_LeastTempDifference_Click(object sender, RoutedEventArgs e)
+        {
+            List<TemperatureDifference> tempDiffList = EFLibrary.TempDifference();
+
+            var qu = tempDiffList
+                .OrderBy(r => r.TempDifferenceInsideOutside)
+                .Take(150);
+
+            PrintMessage("Datum:\t\tTimme:\tTemperaturskillnad Inne/Ute");
+            foreach (var item in qu)
+            {
+                lbx_Result.Items.Add($"{item.Time.ToString("yy-MM-dd\tHH")}\t\t{Math.Round(item.TempDifferenceInsideOutside, 1)}");
+            }
+        }
+
+
+        // Search for data at specific date button
         private void btn_SearchDate_Click(object sender, RoutedEventArgs e)
         {
             bool checkboxes = true;
@@ -142,11 +170,14 @@ namespace EFFinalProject
                 lbx_Result.Items.Add(EFLibrary.AverageTempSearch(InsideOrOutside(), dp_SelectDate.SelectedDate.ToString()));
             }
         }
+       
+        
+        // Save data input to database
         private void btn_SaveData_Click(object sender, RoutedEventArgs e)
         {
             string place = tbx_Place.Text.ToLower();
             bool placeInput = true;
-            switch(place)
+            switch (place)
             {
                 case "inne":
                     place = "Inne";
@@ -186,6 +217,8 @@ namespace EFFinalProject
             }
         }
 
+
+        // Checks if data should be taken from inside or outside
         private string InsideOrOutside()
         {
             if ((bool)cbx_Inside.IsChecked)
@@ -194,6 +227,9 @@ namespace EFFinalProject
                 return "Ute";
             return "";
         }
+
+
+        // Checks so that the checkboxes are correctly filled
         private bool ValidateSortingCheckboxes()
         {
             if ((bool)cbx_HighToLow.IsChecked == false && (bool)cbx_LowToHigh.IsChecked == false || (bool)cbx_Inside.IsChecked == false && (bool)cbx_Outside.IsChecked == false)
@@ -206,24 +242,34 @@ namespace EFFinalProject
                 return true;
         }
 
+
+        // Read from file button
         private void btn_ReadFromFile_Click(object sender, RoutedEventArgs e)
         {
-            (bool readFinished, int numberOfFiles) = EFLibrary.ReadFile("TemperaturData.csv");
-            if (readFinished)
+            MessageBoxResult messageBoxResult = MessageBox.Show("Vill du verkligen infoga data från fil?", "Ladda upp fil till databas", MessageBoxButton.YesNo);
+            if (messageBoxResult == MessageBoxResult.Yes)
             {
-                PrintMessage($"{numberOfFiles} Filer sparade till databasen.");
-            }
-            if (!readFinished)
-            {
-                PrintMessage("Något gick fel!\n" +
-                             "Se till att filen finns tillgänglig.");
+                (bool readFinished, int numberOfFiles) = EFLibrary.ReadFile("TemperaturData.csv");
+                if (readFinished)
+                {
+                    PrintMessage($"{numberOfFiles} Filer sparade till databasen.");
+                }
+                if (!readFinished)
+                {
+                    PrintMessage("Något gick fel!\n" +
+                                 "Se till att filen finns tillgänglig.");
+                }
             }
         }
         
+        
+        // Prints messages
         private void PrintMessage(string message)
         {
             lbx_Result.Items.Clear();
             lbx_Result.Items.Add(message);
         }
+
+
     }
 }

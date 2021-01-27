@@ -7,18 +7,12 @@ using System.Linq;
 
 
 // FIXA SÅ MAN KAN SE NÄR BALKONGDÖRREN ÄR ÖPPEN.
-// KAN MAN TA UR FOREACH LOOPEN I METODERNA NEDAN?
-// LÄGGA TILL INFO TILL DATABASEN FÖR DAGENS DATUM
-// TA BORT EN VISS DATA MARKERING
-// ÄNDRA EN VISS DATA MARKERING?
 
 
 namespace EFFinalLibrary
 {
     public class EFLibrary
     {
-
-        // KONVERTERAR STRING TILL DATETIME - TA BORT???
         public static DateTime SearchDate(string date) // "yyyy-MM-dd"
         {
             try
@@ -31,54 +25,10 @@ namespace EFFinalLibrary
                 return DateTime.Now;
             }
         }
-        // LÄGGER TILL EN TEMPERATUR PoST I TABELLEN I DATABASEN
-        public static void AddTemp(DateTime time, string place, double temp, double humidity)
-        {
-            TemperatureData newData = new TemperatureData()
-            {
-                Time = time,
-                Place = place,
-                Temperature = temp,
-                Humidity = humidity
-            };
-
-            using (var context = new EFFinalContext())
-            {
-                context.Add(newData);
-                context.SaveChanges();
-            }
-
-        }
-        // LÄSER HELA databasen och skriver ut - TA BORT???
-        public static void ReadTable()
-        {
-            using (var context = new EFFinalContext())
-            {
-                foreach (var item in context.TempData)
-                {
-                    Console.WriteLine($"{item.Time} - {item.Place} - {item.Temperature} - {item.Humidity}");
-                }
-            }
-        }
-        // SORTERAR HELA DATABASEN INNE EFTER TEMPERATUR - TABORT???
-        public static void ColdestToHottest()
-        {
-            using (var context = new EFFinalContext())
-            {
-                var q = context.TempData
-                    .Where(q => q.Place == "Inne")
-                    .OrderBy(q => q.Temperature);
-
-                foreach (var item in q)
-                {
-                    Console.WriteLine(item.Temperature);
-                }
-            }
-        }
 
 
 
-
+        // Meteorological Winter / Autumn
         public static string MeteorologicalAutumn()
         {
             List<DateAndAverageNumber> averageDataEachDay = GetAverageTempAndHumidityData("Ute");
@@ -148,7 +98,7 @@ namespace EFFinalLibrary
 
 
 
-
+        // Humidity
         public static List<DateAndAverageNumber> HumidityMostToLeast(string place)
         {
             List<DateAndAverageNumber> averageHumidityData = GetAverageTempAndHumidityData(place);
@@ -180,7 +130,7 @@ namespace EFFinalLibrary
 
 
 
-
+        // Temperature
         public static List<DateAndAverageNumber> TempHottestToColdestDay(string place)
         {
             List<DateAndAverageNumber> averageTempEachDay = GetAverageTempAndHumidityData(place);
@@ -212,7 +162,7 @@ namespace EFFinalLibrary
 
 
 
-
+        // MoldRisk
         public static List<DateAndAverageNumber> MoldRiskLeastToMost(string place)
         {
             List<DateAndAverageNumber> averageData = GetAverageTempAndHumidityData(place);
@@ -252,6 +202,8 @@ namespace EFFinalLibrary
                 double moldRisk = ((item.AverageHumidity - 78) * (item.AverageTemperature / 15)) / 0.22;
                 if (moldRisk < 0)
                     item.MoldRisk = 0;
+                else if (moldRisk > 100)
+                    item.MoldRisk = 100;
                 else
                     item.MoldRisk = moldRisk;
             }
@@ -259,7 +211,7 @@ namespace EFFinalLibrary
 
 
 
-        ////UTRÄKNING FÖR BALKONGDÖRREN!
+        ////Calculation for open balcony
         public static void BalconyOpenEachDay()
         {
             List<DateAndAverageNumber> dataList = new List<DateAndAverageNumber>();
@@ -312,6 +264,56 @@ namespace EFFinalLibrary
 
 
 
+        // Return a list of temperature differences each hour.
+        public static List<TemperatureDifference> TempDifference()
+        {
+            //List<TemperatureData> testingList = new List<TemperatureData>();    //??
+            List<TemperatureDifference> resultTempDifference = new List<TemperatureDifference>();
+            List<TemperatureData> listInside = new List<TemperatureData>();
+            List<TemperatureData> listOutside = new List<TemperatureData>();
+            using (var context = new EFFinalContext())
+            {
+                var q = context.TempData
+                    .OrderBy(c => c.Time)
+                    .AsEnumerable()
+                    .GroupBy(c => c.Time.Date); 
+
+                foreach (var group in q)
+                {
+                    var x = group
+                        .GroupBy(c => c.Time.Hour);
+                    foreach (var data in x)
+                    {
+                        listInside.Clear();
+                        listOutside.Clear();
+                        var tempDate = data.First();
+                        DateTime dateTemp = tempDate.Time;
+                        foreach (var y in data)
+                        {
+                            if (y.Place == "Inne")
+                                listInside.Add(y);
+                            else if (y.Place == "Ute")
+                                listOutside.Add(y);
+                        }
+                        try
+                        {
+                            double tempInside = listInside.Average(c => c.Temperature);
+                            double tempOutside = listOutside.Average(c => c.Temperature);
+                            double tempDifference = Math.Abs(tempInside - tempOutside);
+                            resultTempDifference.Add(new TemperatureDifference(dateTemp, tempDifference));
+                        }
+                        catch (Exception)
+                        {
+                            continue;
+                        }
+                    }
+                }
+            }
+            return resultTempDifference;
+        }
+
+
+        // Search for a date and returns date, temperature, and humidity.
         public static string AverageTempSearch(string place, string dateInput)
         {
             List<DateAndAverageNumber> averageTempEachDay = GetAverageTempAndHumidityData(place);
@@ -329,8 +331,7 @@ namespace EFFinalLibrary
             return "";
         }
 
-
-
+        // Return a list of dates, average temperature and average humidity for each day.
         public static List<DateAndAverageNumber> GetAverageTempAndHumidityData(string place)
         {
             List<DateAndAverageNumber> averageTempAndHumidityEachDay = new List<DateAndAverageNumber>();
@@ -338,8 +339,8 @@ namespace EFFinalLibrary
             {
                 var q = context.TempData
                     .Where(d => d.Place == place)
-                    .OrderBy(d => d.Time)
                     .AsEnumerable()
+                    .OrderBy(d => d.Time)
                     .GroupBy(d => d.Time.Date);
 
                 foreach (var group in q)
@@ -360,7 +361,7 @@ namespace EFFinalLibrary
         }
 
 
-
+        // Adds new data with todays date and saves it
         public static void AddDataToDatabase(string place, double temp, double humidity)
         {
             using (var context = new EFFinalContext())
@@ -375,6 +376,7 @@ namespace EFFinalLibrary
                 context.SaveChanges();
             }
         }
+        // Reads file and saves it to database.
         public static (bool, int) ReadFile(string filePath)
         {
             NumberFormatInfo provider = new NumberFormatInfo();             // Tvungen att använda för att konvertera från string till double. 
