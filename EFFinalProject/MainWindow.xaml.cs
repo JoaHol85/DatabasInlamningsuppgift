@@ -46,14 +46,13 @@ namespace EFFinalProject
 
         private void btn_Temperature_Click(object sender, RoutedEventArgs e)
         {
-            lbx_Result.Items.Clear();
             bool checkboxes = ValidateSortingCheckboxes();
             string place = InsideOrOutside();
             List<DateAndAverageNumber> result = new List<DateAndAverageNumber>();
 
             if (checkboxes)
             {
-                lbx_Result.Items.Add("Datum\t\tTemperatur");
+                PrintMessage("Datum\t\tTemperatur");
                 if ((bool)cbx_HighToLow.IsChecked == true)
                 {
                     result = EFLibrary.TempHottestToColdestDay(place);
@@ -71,14 +70,13 @@ namespace EFFinalProject
         }
         private void btn_Humidity_Click(object sender, RoutedEventArgs e)
         {
-            lbx_Result.Items.Clear();
             bool checkboxes = ValidateSortingCheckboxes();
             string place = InsideOrOutside();
             List<DateAndAverageNumber> result = new List<DateAndAverageNumber>();
 
             if (checkboxes)
             {
-                lbx_Result.Items.Add("Datum\t\tLuftfuktighet");
+                PrintMessage("Datum\t\tLuftfuktighet");
                 if ((bool)cbx_HighToLow.IsChecked == true)
                 {
                     result = EFLibrary.HumidityMostToLeast(place);
@@ -96,14 +94,13 @@ namespace EFFinalProject
         }
         private void btn_MoldRisk_Click(object sender, RoutedEventArgs e)
         {
-            lbx_Result.Items.Clear();
             bool checkboxes = ValidateSortingCheckboxes();
             string place = InsideOrOutside();
             List<DateAndAverageNumber> result = new List<DateAndAverageNumber>();
 
             if (checkboxes)
             {
-                lbx_Result.Items.Add("Datum\t\tMögelrisk");
+                PrintMessage("Datum\t\tMögelrisk");
                 if ((bool)cbx_HighToLow.IsChecked == true)
                 {
                     result = EFLibrary.MoldRiskMostToLeast(place);
@@ -118,6 +115,15 @@ namespace EFFinalProject
                     lbx_Result.Items.Add($"{item.Date.ToString("yyyy-MM-dd")}\t{Math.Round(item.MoldRisk, 1)}%");
                 }
             }
+        }
+
+        private void btn_MeteorologicalAutumn_Click(object sender, RoutedEventArgs e)
+        {
+            PrintMessage(EFLibrary.MeteorologicalAutumn());
+        }
+        private void btn_MeteorologicalWinter_Click(object sender, RoutedEventArgs e)
+        {
+            PrintMessage(EFLibrary.MeteorologicalWinter());
         }
 
         private void btn_SearchDate_Click(object sender, RoutedEventArgs e)
@@ -135,7 +141,49 @@ namespace EFFinalProject
             {
                 lbx_Result.Items.Add(EFLibrary.AverageTempSearch(InsideOrOutside(), dp_SelectDate.SelectedDate.ToString()));
             }
-
+        }
+        private void btn_SaveData_Click(object sender, RoutedEventArgs e)
+        {
+            string place = tbx_Place.Text.ToLower();
+            bool placeInput = true;
+            switch(place)
+            {
+                case "inne":
+                    place = "Inne";
+                    break;
+                case "ute":
+                    place = "Ute";
+                    break;
+                default:
+                    PrintMessage("Vänligen ange platsen för mätningen\n" +
+                                 "Inne eller Ute.");
+                    placeInput = false;
+                    break;
+            }
+            if (placeInput)
+            {
+                double temp;
+                bool tempCheck = double.TryParse(tbx_Temp.Text, out temp);
+                if (!tempCheck)
+                {
+                    PrintMessage("Temperatur värdet är inte korekt!\n" +
+                                 "Vänligen ange temperaturen i siffror.");
+                }
+                else
+                {
+                    bool hum = double.TryParse(tbx_Humidity.Text, out double humidity);
+                    if (!hum)
+                    {
+                        PrintMessage("Luftfuktighetsvärdet är inte korekt!\n" +
+                                     "Vänligen ange luftfuktigheten i siffror.");
+                    }
+                    else
+                    {
+                        EFLibrary.AddDataToDatabase(place, temp, humidity);
+                        PrintMessage("Data sparat!");
+                    }
+                }
+            }
         }
 
         private string InsideOrOutside()
@@ -150,27 +198,32 @@ namespace EFFinalProject
         {
             if ((bool)cbx_HighToLow.IsChecked == false && (bool)cbx_LowToHigh.IsChecked == false || (bool)cbx_Inside.IsChecked == false && (bool)cbx_Outside.IsChecked == false)
             {
-                lbx_Result.Items.Add("Inget/Inga sorteringsval har gjorts!\n" +
-                                     "Välj inne eller ute och ordningen på resultatet.");
+                PrintMessage("Inget/Inga sorteringsval har gjorts!\n" +
+                             "Välj inne eller ute och ordningen på resultatet.");
                 return false;
             }
             else
                 return true;
         }
 
-
         private void btn_ReadFromFile_Click(object sender, RoutedEventArgs e)
         {
             (bool readFinished, int numberOfFiles) = EFLibrary.ReadFile("TemperaturData.csv");
             if (readFinished)
             {
-                lbx_Result.Items.Add($"{numberOfFiles} Filer sparade till databasen.");
+                PrintMessage($"{numberOfFiles} Filer sparade till databasen.");
             }
             if (!readFinished)
             {
-                lbx_Result.Items.Add("Något gick fel!\n" +
-                                     "Se till att filen finns tillgänglig.");
+                PrintMessage("Något gick fel!\n" +
+                             "Se till att filen finns tillgänglig.");
             }
+        }
+        
+        private void PrintMessage(string message)
+        {
+            lbx_Result.Items.Clear();
+            lbx_Result.Items.Add(message);
         }
     }
 }

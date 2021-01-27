@@ -79,12 +79,8 @@ namespace EFFinalLibrary
 
 
 
-
-
-
-        public static void MeteorologicalAutumn()
+        public static string MeteorologicalAutumn()
         {
-
             List<DateAndAverageNumber> averageDataEachDay = GetAverageTempAndHumidityData("Ute");
 
             bool noMeteorologicalAutumn = true;
@@ -102,10 +98,8 @@ namespace EFFinalLibrary
 
                     if (daysInRow == 5)
                     {
-                        Console.WriteLine($"Året {target.Date.Year} inföll den meteorologiska hösten: {target.Date.Day}/{target.Date.Month}" +
-                                          $"\nTemperaturen var då {Math.Round(target.AverageTemperature, 1)} grader");
-                        noMeteorologicalAutumn = false;
-                        break;
+                        return $"Året {target.Date.Year} inföll den meteorologiska hösten: {target.Date.Day}/{target.Date.Month}" +
+                               $"\nTemperaturen var då {Math.Round(target.AverageTemperature, 1)} grader";
                     }
                 }
                 else
@@ -114,10 +108,11 @@ namespace EFFinalLibrary
                 }
             }
             if (noMeteorologicalAutumn)
-                Console.WriteLine("Den meteorologiska hösten inträffade aldrig.");
-
+                return "Den meteorologiska hösten inträffade aldrig.";
+            else
+                return "";
         }
-        public static void MeteorologicalWinter()
+        public static string MeteorologicalWinter()
         {
             List<DateAndAverageNumber> averageDataEachDay = GetAverageTempAndHumidityData("Ute");
 
@@ -136,10 +131,8 @@ namespace EFFinalLibrary
 
                     if (daysInRow == 5)
                     {
-                        Console.WriteLine($"Året {target.Date.Year} inföll den meteorologiska vintern: {target.Date.Day}/{target.Date.Month}" +
-                                          $"\nTemperaturen var då {Math.Round(target.AverageTemperature, 1)} grader");
-                        noMeteorologiaclWinter = false;
-                        break;
+                        return $"Året {target.Date.Year} inföll den meteorologiska vintern: {target.Date.Day}/{target.Date.Month}" +
+                               $"\nTemperaturen var då {Math.Round(target.AverageTemperature, 1)} grader";
                     }
                 }
                 else
@@ -148,10 +141,10 @@ namespace EFFinalLibrary
                 }
             }
             if (noMeteorologiaclWinter)
-                Console.WriteLine($"Den Meteorologiska vintern inträffade aldig.");
-
+                return $"Den Meteorologiska vintern inträffade aldig.";
+            else
+                return "";
         }
-
 
 
 
@@ -188,7 +181,6 @@ namespace EFFinalLibrary
 
 
 
-
         public static List<DateAndAverageNumber> TempHottestToColdestDay(string place)
         {
             List<DateAndAverageNumber> averageTempEachDay = GetAverageTempAndHumidityData(place);
@@ -217,7 +209,6 @@ namespace EFFinalLibrary
             }
             return result;
         }
-
 
 
 
@@ -268,9 +259,56 @@ namespace EFFinalLibrary
 
 
 
-        //UTRÄKNING FÖR BALKONGDÖRREN!
-        public static List<DateAndAverageNumber> 
+        ////UTRÄKNING FÖR BALKONGDÖRREN!
+        public static void BalconyOpenEachDay()
+        {
+            List<DateAndAverageNumber> dataList = new List<DateAndAverageNumber>();
+            List<List<DateAndAverageNumber>> listOfLists = new List<List<DateAndAverageNumber>>();
+            using (var context = new EFFinalContext())
+            {
+                var q = context.TempData
+                    .Where(t => t.Place == "Inne")
+                    .OrderBy(t => t.Time)
+                    .AsEnumerable()
+                    .GroupBy(t => t.Time.Date);
 
+                foreach (var group in q)
+                {
+                    dataList.Clear();
+                    foreach (var item in group)
+                    {
+                        dataList.Add(new DateAndAverageNumber(item.Time, item.Temperature, 0));
+                    }
+                    listOfLists.Add(dataList);
+                }
+            }
+
+            double latestTemp = 0;
+            foreach (var list in listOfLists)
+            {
+                DateTime timePeriod;
+                double temp = 0;
+                var period = list.First();
+                foreach (var item in list)
+                {
+                    if (latestTemp == 0)
+                        latestTemp = item.AverageTemperature;
+                    else
+                    {
+                        temp = item.AverageTemperature;
+                        if (temp < latestTemp - 0.5)
+                        {
+                            timePeriod = item.Date;
+                            latestTemp = item.AverageTemperature;
+                        }
+                        if (temp > latestTemp + 0.5)
+                        {
+
+                        }
+                    }
+                }
+            }
+        }
 
 
 
@@ -323,6 +361,20 @@ namespace EFFinalLibrary
 
 
 
+        public static void AddDataToDatabase(string place, double temp, double humidity)
+        {
+            using (var context = new EFFinalContext())
+            {
+                TemperatureData data = new TemperatureData();
+                data.Place = place;
+                data.Humidity = humidity;
+                data.Temperature = temp;
+                data.Time = DateTime.Now;
+
+                context.Add(data);
+                context.SaveChanges();
+            }
+        }
         public static (bool, int) ReadFile(string filePath)
         {
             NumberFormatInfo provider = new NumberFormatInfo();             // Tvungen att använda för att konvertera från string till double. 
