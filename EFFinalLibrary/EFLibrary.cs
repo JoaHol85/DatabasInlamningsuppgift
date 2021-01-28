@@ -211,7 +211,7 @@ namespace EFFinalLibrary
 
 
 
-        ////Calculation for open balcony
+        ////Calculation for open balcony - NOT DONE
         public static void BalconyOpenEachDay()
         {
             List<DateAndAverageNumber> dataList = new List<DateAndAverageNumber>();
@@ -267,7 +267,6 @@ namespace EFFinalLibrary
         // Return a list of temperature differences each hour.
         public static List<TemperatureDifference> TempDifference()
         {
-            //List<TemperatureData> testingList = new List<TemperatureData>();    //??
             List<TemperatureDifference> resultTempDifference = new List<TemperatureDifference>();
             List<TemperatureData> listInside = new List<TemperatureData>();
             List<TemperatureData> listOutside = new List<TemperatureData>();
